@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs') %>
+<body>
+    <%- include('../partials/nav.ejs') %>
+    <div class="details content">
+        <h2><%= blog.title %></h2>
+        <div class="content">
+            <p><%= blog.body %></p>
+        </div>
+        <a class="update">update</a>
+        <a class="delete" data-doc="<%= blog._id %>">delete</a>
+    </div>
+    <div class="hide create-blog content">
+        <form action="/blogs/<%= blog._id %>" method="POST">
+            <label for="body">Blog body:</label>
+            <textarea id="body" name="body" required></textarea>
+            <button>submit</button>
+        </form>
+    </div>
+
+    <%- include('../partials/footer.ejs') %>
+
+    <script>
+        const s = (selector) => document.querySelector(selector)
+
+        const [
+               deleteButton, 
+               updateButton, 
+               details,
+               updateContainer
+              ] = [s('.delete'), s('.update'), s('.details'), s('.create-blog')]
+
+              
+        deleteButton.addEventListener('click', (e) => {
+            const endPoint = `/blogs/${deleteButton.dataset.doc}`
+            fetch(endPoint, {
+                method: 'DELETE'
+            })
+            .then((res) => res.json())
+            .then((data) => window.location.href = data.message)
+            .catch(err => console.log(err))
+        })
+
+        updateButton.addEventListener('click', (e) => {
+            details.classList.toggle('hide')
+            updateContainer.classList.toggle('hide')
+        })
+    </script>
+</body>
+</html>
